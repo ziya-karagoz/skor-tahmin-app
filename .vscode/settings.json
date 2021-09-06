@@ -1,8 +1,32 @@
 {
-    // Set the default
-"editor.formatOnSave": false,
-// Enable per-language
-"[javascript]": {
-    "editor.formatOnSave": true
-}
-}
+    "explorer.confirmDelete": false,
+    "[html]": {
+      "editor.formatOnSave": true,
+      "editor.formatOnPaste": true
+    },
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "java.project.importHint": false,
+    "files.exclude": {
+      "/.classpath": true,
+      "/.project": true,
+      "/.settings": true,
+      "/.factorypath": true
+    },
+    "emmet.includeLanguages": {
+      "javascript": "javascriptreact"
+    },
+  
+    "editor.minimap.enabled": false,
+    "prettier.jsxSingleQuote": true,
+  
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "explorer.confirmDragAndDrop": false,
+    "security.workspace.trust.untrustedFiles": "open"
+  }
