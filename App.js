@@ -5,7 +5,14 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import firebase from "firebase";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+// route imports
+import LoginScreen from "./src/navigations/LoginScreen";
+import RegisterScreen from "./src/navigations/RegisterScreen";
+
+// objcet for firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDECmTUe-7Opc7sbCXoB70reoxbZr_7xKo",
   authDomain: "skor-tahmin-aad71.firebaseapp.com",
@@ -16,46 +23,21 @@ const firebaseConfig = {
   measurementId: "G-6MTVHBX8E9",
 };
 
-// How to check if a Firebase App is already initialized (ama calismiyor)
+const Stack = createNativeStackNavigator();
+
+// how to check if a Firebase App is already initialized
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
 }
 
-const fetchData = () => {
-  const db = firebase.firestore();
-  var docRef = db.collection("users").doc("user1");
-
-  docRef
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        console.log("Document data:", doc.data());
-        return doc.data();
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-        return;
-      }
-    })
-    .catch((error) => {
-      return console.error("Error getting document:", error);
-    });
-};
-
 export default function App() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  useEffect(() => {
-    const data = fetchData();
-    setPassword(data.password);
-    setUsername(data.username);
-  }, []);
   return (
-    <View style={styles.container}>
-      <Text>username: {username}</Text>
-      <Text>password: {password}</Text>
-      <StatusBar style='auto' />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name='Register' component={RegisterScreen} />
+        <Stack.Screen name='Login' component={LoginScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
