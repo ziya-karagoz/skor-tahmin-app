@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StyleSheet, Text, View } from "react-native";
+import firebase from "firebase";
 
 function RegisterScreen({ navigation }) {
   const [name, setName] = useState("");
@@ -9,8 +10,9 @@ function RegisterScreen({ navigation }) {
   const [username, setusername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const clickHandler = () => {
+  const createAccount = () => {
     const data = {
       name: name,
       surname: surname,
@@ -18,6 +20,34 @@ function RegisterScreen({ navigation }) {
       email: email,
       password: password,
     };
+    const db = firebase.firestore();
+    db.collection("users").add(data);
+    window.alert("basarili bir sekilde eklenmistir!");
+    navigation.navigate("Login");
+  };
+
+  const handleSubmit = () => {
+    if (!name) {
+      alert("Please fill name");
+      return;
+    }
+    if (!surname) {
+      alert("Please fill surname");
+      return;
+    }
+    if (!username) {
+      alert("Please fill username");
+      return;
+    }
+    if (!email) {
+      alert("Please fill email");
+      return;
+    }
+    if (!password) {
+      alert("Please fill password");
+      return;
+    }
+    createAccount();
   };
 
   useEffect(() => {}, []);
@@ -66,7 +96,9 @@ function RegisterScreen({ navigation }) {
             />
           </div>
 
-          <button onClick={clickHandler}>Register</button>
+          <button type='button' onClick={handleSubmit}>
+            Register
+          </button>
         </form>
       </div>
     </div>

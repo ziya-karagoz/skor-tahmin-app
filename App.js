@@ -9,8 +9,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // route imports
-import LoginScreen from "./src/navigations/LoginScreen";
-import RegisterScreen from "./src/navigations/RegisterScreen";
+import LoginScreen from "./src/screens/LoginScreen";
+import RegisterScreen from "./src/screens/RegisterScreen";
+import HomeScreen from "./src/screens/HomeScreen";
 
 // objcet for firebase configuration
 const firebaseConfig = {
@@ -25,7 +26,7 @@ const firebaseConfig = {
 
 const Stack = createNativeStackNavigator();
 
-// how to check if a Firebase App is already initialized
+// check if a Firebase App is already initialized
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
 }
@@ -34,8 +35,21 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name='Register' component={RegisterScreen} />
-        <Stack.Screen name='Login' component={LoginScreen} />
+        <Stack.Screen
+          name='Login'
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='Register'
+          component={RegisterScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='Home'
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
