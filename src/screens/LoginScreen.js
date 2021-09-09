@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-dom";
 import firebase from "firebase";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View, TextInput, Button } from "react-native";
+
+import styles from "../styles/ScreenStyles";
 
 function LoginScreen({ navigation }) {
   // states
@@ -30,6 +33,7 @@ function LoginScreen({ navigation }) {
         });
         setLoading(false);
       });
+    console.log("Login", data);
   };
 
   const handleSubmitPress = () => {
@@ -44,7 +48,7 @@ function LoginScreen({ navigation }) {
 
     if (!loading) {
       let userdata = {};
-      data.map((user) => {
+      data?.map((user) => {
         if (user.username === username && user.password === password) {
           userdata = user;
         } else {
@@ -60,36 +64,45 @@ function LoginScreen({ navigation }) {
   };
 
   return (
-    <div>
-      <div>
-        <div>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <div>
-              <label htmlFor='usernameId'>UserName: </label>
-              <input
-                type='text'
-                id='usernameId'
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor='passwordId'>Password: </label>
-              <input
-                type='text'
-                id='passwordId'
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <button onClick={handleSubmitPress}>Login</button>
-          </form>
-        </div>
-        <div>
-          <button type='button' onClick={() => navigation.navigate("Register")}>
-            Don't have any account yet?
-          </button>
-        </div>
-      </div>
-    </div>
+    <View style={styles.container}>
+      <View>
+        <View>
+          <Text style={styles.title} htmlFor='usernameId'>
+            UserName:{" "}
+          </Text>
+          <TextInput
+            style={styles.input}
+            type='text'
+            id='usernameId'
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </View>
+        <View>
+          <Text style={styles.title} htmlFor='passwordId'>
+            Password:{" "}
+          </Text>
+          <TextInput
+            style={styles.input}
+            type='text'
+            id='passwordId'
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </View>
+        <Button style={styles.button} onPress={handleSubmitPress} title='Login'>
+          Login
+        </Button>
+      </View>
+      <View>
+        <Button
+          style={styles.button}
+          type='button'
+          onPress={() => navigation.navigate("Register")}
+          title="Don't have any account yet?"
+        >
+          Don't have any account yet?
+        </Button>
+      </View>
+    </View>
   );
 }
 

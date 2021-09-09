@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View, TextInput, Button } from "react-native";
 import firebase from "firebase";
+import styles from "../styles/ScreenStyles";
 
 function RegisterScreen({ navigation }) {
   const [name, setName] = useState("");
@@ -11,6 +12,21 @@ function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  const fetchData = () => {
+    const db = firebase.firestore();
+
+    db.collection("users")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.docs.forEach((doc) => {
+          data.push(doc.data());
+        });
+      });
+
+    console.log("Register: ", data);
+  };
 
   const createAccount = () => {
     const data = {
@@ -47,61 +63,78 @@ function RegisterScreen({ navigation }) {
       alert("Please fill password");
       return;
     }
+    fetchData();
     createAccount();
   };
 
   useEffect(() => {}, []);
   return (
-    <div>
-      <div>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <div>
-            <label htmlFor='nameId'>Name: </label>
-            <input
-              type='text'
-              id='nameId'
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor='surnameId'>Surname: </label>
-            <input
-              type='text'
-              id='surnameId'
-              onChange={(e) => setSurname(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor='usernameId'>Username: </label>
-            <input
-              type='text'
-              id='usernameId'
-              onChange={(e) => setusername(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor='emailId'>E-mail: </label>
-            <input
-              type='text'
-              id='emailId'
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor='passwordId'>Password: </label>
-            <input
-              type='text'
-              id='passwordId'
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+    <View style={styles.container}>
+      <View>
+        <Text style={styles.title} htmlFor='nameId'>
+          Name:{" "}
+        </Text>
+        <TextInput
+          style={styles.input}
+          type='text'
+          id='nameId'
+          onChange={(e) => setName(e.target.value)}
+        />
+      </View>
+      <View>
+        <Text style={styles.title} htmlFor='surnameId'>
+          Surname:{" "}
+        </Text>
+        <TextInput
+          style={styles.input}
+          type='text'
+          id='surnameId'
+          onChange={(e) => setSurname(e.target.value)}
+        />
+      </View>
+      <View>
+        <Text style={styles.title} htmlFor='usernameId'>
+          Username:{" "}
+        </Text>
+        <TextInput
+          style={styles.input}
+          type='text'
+          id='usernameId'
+          onChange={(e) => setusername(e.target.value)}
+        />
+      </View>
+      <View>
+        <Text style={styles.title} htmlFor='emailId'>
+          E-mail:{" "}
+        </Text>
+        <TextInput
+          style={styles.input}
+          type='text'
+          id='emailId'
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </View>
+      <View>
+        <Text style={styles.title} htmlFor='passwordId'>
+          Password:{" "}
+        </Text>
+        <TextInput
+          style={styles.input}
+          type='text'
+          id='passwordId'
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </View>
 
-          <button type='button' onClick={handleSubmit}>
-            Register
-          </button>
-        </form>
-      </div>
-    </div>
+      <Button
+        style={styles.button}
+        type='button'
+        onPress={handleSubmit}
+        title='Register'
+      >
+        Register
+      </Button>
+    </View>
   );
 }
 
