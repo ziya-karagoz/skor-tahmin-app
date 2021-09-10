@@ -3,11 +3,11 @@ import { useHistory } from "react-dom";
 import firebase from "firebase";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, View, TextInput, Button } from "react-native";
+import { Text, View, TextInput, Button, SafeAreaView } from "react-native";
 
 import styles from "../styles/ScreenStyles";
 
-function LoginScreen({ navigation }) {
+function LoginScreen({ navigation, route }) {
   // states
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
@@ -17,23 +17,34 @@ function LoginScreen({ navigation }) {
   // effect hooks
 
   useEffect(() => {
-    const data = fetchData();
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log("Data: ", data);
   }, [data]);
+
+  useEffect(() => {
+    if (route.params !== undefined && route.params !== data) {
+      fetchData();
+    }
+  }, [route.params]);
 
   // database get request from firestore
   const fetchData = () => {
+    let tempData = [];
     setLoading(true);
-    const db = firebase.firestore();
 
+    const db = firebase.firestore();
     db.collection("users")
       .get()
       .then((querySnapshot) => {
         querySnapshot.docs.forEach((doc) => {
-          data.push(doc.data());
+          tempData.push(doc.data());
         });
         setLoading(false);
       });
-    console.log("Login", data);
+    setData(tempData);
   };
 
   const handleSubmitPress = () => {
@@ -45,16 +56,17 @@ function LoginScreen({ navigation }) {
       alert("Please fill password");
       return;
     }
-
     if (!loading) {
       let userdata = {};
-      data?.map((user) => {
+
+      data.map((user) => {
         if (user.username === username && user.password === password) {
           userdata = user;
         } else {
           return;
         }
       });
+
       if (userdata.username === username && userdata.password === password) {
         navigation.navigate("Home");
       } else {
@@ -64,7 +76,7 @@ function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View>
         <View>
           <Text style={styles.title} htmlFor='usernameId'>
@@ -74,7 +86,8 @@ function LoginScreen({ navigation }) {
             style={styles.input}
             type='text'
             id='usernameId'
-            onChange={(e) => setUsername(e.target.value)}
+            onChangeText={(text) => setUsername(text)}
+            value={username}
           />
         </View>
         <View>
@@ -85,7 +98,8 @@ function LoginScreen({ navigation }) {
             style={styles.input}
             type='text'
             id='passwordId'
-            onChange={(e) => setPassword(e.target.value)}
+            onChangeText={(text) => setPassword(text)}
+            value={password}
           />
         </View>
         <Button style={styles.button} onPress={handleSubmitPress} title='Login'>
@@ -102,7 +116,7 @@ function LoginScreen({ navigation }) {
           Don't have any account yet?
         </Button>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

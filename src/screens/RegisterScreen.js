@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, View, TextInput, Button } from "react-native";
+import { Text, View, TextInput, Button, SafeAreaView } from "react-native";
 import firebase from "firebase";
 import styles from "../styles/ScreenStyles";
 
@@ -15,6 +15,7 @@ function RegisterScreen({ navigation }) {
   const [data, setData] = useState([]);
 
   const fetchData = () => {
+    setLoading(true);
     const db = firebase.firestore();
 
     db.collection("users")
@@ -24,12 +25,11 @@ function RegisterScreen({ navigation }) {
           data.push(doc.data());
         });
       });
-
-    console.log("Register: ", data);
+    setLoading(false);
   };
 
   const createAccount = () => {
-    const data = {
+    const userdata = {
       name: name,
       surname: surname,
       username: username,
@@ -37,9 +37,12 @@ function RegisterScreen({ navigation }) {
       password: password,
     };
     const db = firebase.firestore();
-    db.collection("users").add(data);
+    db.collection("users").add(userdata);
+    fetchData();
     window.alert("basarili bir sekilde eklenmistir!");
-    navigation.navigate("Login");
+    if (!loading) {
+      navigation.navigate("Login", data);
+    }
   };
 
   const handleSubmit = () => {
@@ -63,13 +66,12 @@ function RegisterScreen({ navigation }) {
       alert("Please fill password");
       return;
     }
-    fetchData();
     createAccount();
   };
 
   useEffect(() => {}, []);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View>
         <Text style={styles.title} htmlFor='nameId'>
           Name:{" "}
@@ -78,7 +80,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='nameId'
-          onChange={(e) => setName(e.target.value)}
+          onChangeText={(e) => setName(e.target.value)}
         />
       </View>
       <View>
@@ -89,7 +91,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='surnameId'
-          onChange={(e) => setSurname(e.target.value)}
+          onChangeText={(e) => setSurname(e.target.value)}
         />
       </View>
       <View>
@@ -100,7 +102,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='usernameId'
-          onChange={(e) => setusername(e.target.value)}
+          onChangeText={(e) => setusername(e.target.value)}
         />
       </View>
       <View>
@@ -111,7 +113,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='emailId'
-          onChange={(e) => setEmail(e.target.value)}
+          onChangeText={(e) => setEmail(e.target.value)}
         />
       </View>
       <View>
@@ -122,7 +124,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='passwordId'
-          onChange={(e) => setPassword(e.target.value)}
+          onChangeText={(e) => setPassword(e.target.value)}
         />
       </View>
 
@@ -134,7 +136,7 @@ function RegisterScreen({ navigation }) {
       >
         Register
       </Button>
-    </View>
+    </SafeAreaView>
   );
 }
 
