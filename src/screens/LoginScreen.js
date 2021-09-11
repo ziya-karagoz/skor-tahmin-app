@@ -5,6 +5,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, View, TextInput, Button, SafeAreaView } from "react-native";
 
+import { AuthContext } from "../components/context";
+
 import styles from "../styles/ScreenStyles";
 
 function LoginScreen({ navigation, route }) {
@@ -14,8 +16,9 @@ function LoginScreen({ navigation, route }) {
   const [password, setPassword] = useState("");
   const [data, setData] = useState([]);
 
-  // effect hooks
+  const { signIn, signOut } = React.useContext(AuthContext);
 
+  // effect hooks
   useEffect(() => {
     fetchData();
   }, []);
@@ -102,7 +105,7 @@ function LoginScreen({ navigation, route }) {
             value={password}
           />
         </View>
-        <Button style={styles.button} onPress={handleSubmitPress} title='Login'>
+        <Button style={styles.button} onPress={signOut()} title='Login'>
           Login
         </Button>
       </View>

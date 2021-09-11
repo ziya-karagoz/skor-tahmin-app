@@ -80,7 +80,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='nameId'
-          onChangeText={(e) => setName(e.target.value)}
+          onChangeText={(text) => setName(text)}
         />
       </View>
       <View>
@@ -91,7 +91,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='surnameId'
-          onChangeText={(e) => setSurname(e.target.value)}
+          onChangeText={(text) => setSurname(text)}
         />
       </View>
       <View>
@@ -102,7 +102,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='usernameId'
-          onChangeText={(e) => setusername(e.target.value)}
+          onChangeText={(text) => setusername(text)}
         />
       </View>
       <View>
@@ -113,7 +113,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='emailId'
-          onChangeText={(e) => setEmail(e.target.value)}
+          onChangeText={(text) => setEmail(text)}
         />
       </View>
       <View>
@@ -124,7 +124,7 @@ function RegisterScreen({ navigation }) {
           style={styles.input}
           type='text'
           id='passwordId'
-          onChangeText={(e) => setPassword(e.target.value)}
+          onChangeText={(text) => setPassword(text)}
         />
       </View>
 
