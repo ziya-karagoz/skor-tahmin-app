@@ -16,7 +16,7 @@ function LoginScreen({ navigation, route }) {
   const [password, setPassword] = useState("");
   const [data, setData] = useState([]);
 
-  const { signIn, signOut } = React.useContext(AuthContext);
+  const { signIn, signOut, signUp } = React.useContext(AuthContext);
 
   // effect hooks
   useEffect(() => {
@@ -70,11 +70,7 @@ function LoginScreen({ navigation, route }) {
         }
       });
 
-      if (userdata.username === username && userdata.password === password) {
-        navigation.navigate("Home");
-      } else {
-        window.alert("incorrect username or password");
-      }
+      signIn(userdata.username, userdata.password, username, password);
     }
   };
 
@@ -105,7 +101,7 @@ function LoginScreen({ navigation, route }) {
             value={password}
           />
         </View>
-        <Button style={styles.button} onPress={signOut()} title='Login'>
+        <Button style={styles.button} onPress={handleSubmitPress} title='Login'>
           Login
         </Button>
       </View>

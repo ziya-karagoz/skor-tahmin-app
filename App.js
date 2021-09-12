@@ -35,31 +35,97 @@ if (firebase.apps.length === 0) {
 }
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [userToken, setUserToken] = useState(null);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [userToken, setUserToken] = useState(null);
+  const initialLoginState = {
+    isLoading: true,
+    username: null,
+    userToken: null,
+  };
 
-  const authContext = React.useMemo(() => ({
-    signIn: () => {
-      setUserToken("afsad");
-      setIsLoading(false);
-    },
-    signOut: () => {
-      setUserToken(null);
-      setIsLoading(false);
-    },
-    signUp: () => {
-      setUserToken("afsad");
-      setIsLoading(false);
-    },
-  }));
+  const loginReducer = (prevState, action) => {
+    switch (action.type) {
+      case "RETRIEVE_TOKEN":
+        return { ...prevState, userToken: action.token, isLoading: false };
+      case "LOGIN":
+        return {
+          ...prevState,
+          username: action.id,
+          userToken: action.token,
+          isLoading: false,
+        };
+      case "LOGOUT":
+        return {
+          ...prevState,
+          username: null,
+          userToken: null,
+          isLoading: false,
+        };
+      case "REGISTER":
+        return {
+          ...prevState,
+          username: action.id,
+          userToken: action.token,
+          isLoading: false,
+        };
+    }
+  };
+
+  const [loginState, dispatch] = React.useReducer(
+    loginReducer,
+    initialLoginState
+  );
+
+  const authContext = React.useMemo(
+    () => ({
+      signIn: (username, password, inputUsername, inputPassword) => {
+        // setUserToken("afsad");
+        // setIsLoading(false);
+        let userToken = null;
+        if (username === inputUsername && password === inputPassword) {
+          userToken = "asdsad";
+
+          dispatch({
+            type: "LOGIN",
+            id: username,
+            token: userToken,
+            isLoading: false,
+          });
+        } else {
+          window.alert("username or password incorrect!");
+        }
+        console.log("userToken: ", userToken);
+      },
+      signOut: () => {
+        // setUserToken(null);
+        // setIsLoading(false);
+        dispatch({
+          type: "LOGOUT",
+          isLoading: false,
+        });
+      },
+      signUp: (username) => {
+        // setUserToken("afsad");
+        // setIsLoading(false);
+        dispatch({
+          type: "REGISTER",
+          id: username,
+          token: userToken,
+          isLoading: false,
+        });
+      },
+    }),
+    []
+  );
 
   useEffect(() => {
     setTimeout(() => {
-      setIsLoading(false);
+      let userToken = null;
+      dispatch({ type: "LOGIN", token: userToken });
     }, 1000);
   }, []);
 
-  if (isLoading) {
+  if (loginState.isLoading) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size='large' />
@@ -70,7 +136,7 @@ export default function App() {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        {userToken !== null ? (
+        {loginState.userToken !== null ? (
           <Stack.Navigator>
             <Stack.Screen
               name='Home'

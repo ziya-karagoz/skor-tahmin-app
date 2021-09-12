@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, View, TextInput, Button, SafeAreaView } from "react-native";
 import firebase from "firebase";
 import styles from "../styles/ScreenStyles";
+import { AuthContext } from "../components/context";
 
 function RegisterScreen({ navigation }) {
   const [name, setName] = useState("");
@@ -11,8 +12,11 @@ function RegisterScreen({ navigation }) {
   const [username, setusername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLogin, setisLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+
+  const { signIn, signOut, signUp } = React.useContext(AuthContext);
 
   const fetchData = () => {
     setLoading(true);
@@ -35,13 +39,15 @@ function RegisterScreen({ navigation }) {
       username: username,
       email: email,
       password: password,
+      isLogin: false,
     };
     const db = firebase.firestore();
     db.collection("users").add(userdata);
     fetchData();
     window.alert("basarili bir sekilde eklenmistir!");
     if (!loading) {
-      navigation.navigate("Login", data);
+      signUp(username);
+      //navigation.navigate("Login", data);
     }
   };
 
