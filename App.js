@@ -1,4 +1,5 @@
 // @refresh reset
+const sha256 = require("js-sha256");
 
 import { StatusBar } from "expo-status-bar";
 import React from "react";
@@ -15,6 +16,10 @@ import HomeScreen from "./src/screens/HomeScreen";
 import styles from "./src/styles/ScreenStyles";
 
 import { AuthContext } from "./src/components/context";
+import {
+  initialLoginState,
+  loginReducer,
+} from "./src/utils/reducers/loginReducer";
 
 // objcet for firebase configuration
 const firebaseConfig = {
@@ -37,39 +42,6 @@ if (firebase.apps.length === 0) {
 export default function App() {
   // const [isLoading, setIsLoading] = useState(true);
   // const [userToken, setUserToken] = useState(null);
-  const initialLoginState = {
-    isLoading: true,
-    username: null,
-    userToken: null,
-  };
-
-  const loginReducer = (prevState, action) => {
-    switch (action.type) {
-      case "RETRIEVE_TOKEN":
-        return { ...prevState, userToken: action.token, isLoading: false };
-      case "LOGIN":
-        return {
-          ...prevState,
-          username: action.id,
-          userToken: action.token,
-          isLoading: false,
-        };
-      case "LOGOUT":
-        return {
-          ...prevState,
-          username: null,
-          userToken: null,
-          isLoading: false,
-        };
-      case "REGISTER":
-        return {
-          ...prevState,
-          username: action.id,
-          userToken: action.token,
-          isLoading: false,
-        };
-    }
-  };
 
   const [loginState, dispatch] = React.useReducer(
     loginReducer,
@@ -83,8 +55,8 @@ export default function App() {
         // setIsLoading(false);
         let userToken = null;
         if (username === inputUsername && password === inputPassword) {
-          userToken = "asdsad";
-
+          userToken = sha256(username, password);
+          console.log("token app: ", userToken);
           dispatch({
             type: "LOGIN",
             id: username,
@@ -104,7 +76,7 @@ export default function App() {
           isLoading: false,
         });
       },
-      signUp: (username) => {
+      signUp: (username, userToken) => {
         // setUserToken("afsad");
         // setIsLoading(false);
         dispatch({

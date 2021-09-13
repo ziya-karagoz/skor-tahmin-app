@@ -1,3 +1,5 @@
+const sha256 = require("js-sha256");
+
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -13,6 +15,7 @@ function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setisLogin] = useState(false);
+  const [userToken, setUserToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
 
@@ -40,13 +43,14 @@ function RegisterScreen({ navigation }) {
       email: email,
       password: password,
       isLogin: false,
+      userToken: sha256(username, password),
     };
     const db = firebase.firestore();
     db.collection("users").add(userdata);
     fetchData();
     window.alert("basarili bir sekilde eklenmistir!");
     if (!loading) {
-      signUp(username);
+      signUp(username, userToken);
       //navigation.navigate("Login", data);
     }
   };
@@ -75,7 +79,9 @@ function RegisterScreen({ navigation }) {
     createAccount();
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log("token: ", userToken);
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <View>
