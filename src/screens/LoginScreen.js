@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useReducer } from "react";
 import { useHistory } from "react-dom";
 import firebase from "firebase";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, View, TextInput, Button, SafeAreaView } from "react-native";
-
-import { AuthContext } from "../components/context";
+import { loginReducer, initialState } from "../utils/reducers/loginReducer";
 
 import styles from "../styles/ScreenStyles";
 
@@ -16,16 +15,12 @@ function LoginScreen({ navigation, route }) {
   const [password, setPassword] = useState("");
   const [data, setData] = useState([]);
 
-  const { signIn, signOut, signUp } = React.useContext(AuthContext);
+  const [loginState, dispatch] = useReducer(loginReducer, initialState);
 
   // effect hooks
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    console.log("Data: ", data);
-  }, [data]);
 
   useEffect(() => {
     if (route.params !== undefined && route.params !== data) {
@@ -43,7 +38,7 @@ function LoginScreen({ navigation, route }) {
       .get()
       .then((querySnapshot) => {
         querySnapshot.docs.forEach((doc) => {
-          tempData.push(doc.data());
+          tempData.push(doc);
         });
         setLoading(false);
       });
@@ -59,18 +54,18 @@ function LoginScreen({ navigation, route }) {
       alert("Please fill password");
       return;
     }
-    if (!loading) {
-      let userdata = {};
 
-      data.map((user) => {
-        if (user.username === username && user.password === password) {
-          userdata = user;
-        } else {
-          return;
+    if (!loading) {
+      data.map((item) => {
+        if (
+          item.data().username === username &&
+          item.data().password === password
+        ) {
+          console.log("item.id: ", item.id);
+          dispatch({ type: "LOGIN", payload: item.id });
+          navigation.navigate("Home");
         }
       });
-
-      signIn(userdata.username, userdata.password, username, password);
     }
   };
 

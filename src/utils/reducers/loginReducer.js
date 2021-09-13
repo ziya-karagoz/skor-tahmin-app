@@ -1,33 +1,16 @@
-const initialLoginState = {
-  isLoading: true,
-  username: null,
-  userToken: null,
+export const initialState = {
+  docId: "",
 };
 
-const loginReducer = (prevState, action) => {
+export const loginReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
-      return {
-        ...prevState,
-        username: action.id,
-        userToken: action.token,
-        isLoading: false,
-      };
-    case "LOGOUT":
-      return {
-        ...prevState,
-        username: null,
-        userToken: null,
-        isLoading: false,
-      };
-    case "REGISTER":
-      return {
-        ...prevState,
-        username: action.id,
-        userToken: action.token,
-        isLoading: false,
-      };
+      return { ...state, docId: action.payload };
+
+    case "SIGNOUT":
+      return { ...state, ...initialState };
+
+    default:
+      return state;
   }
 };
-
-export { initialLoginState, loginReducer };

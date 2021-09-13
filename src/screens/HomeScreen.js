@@ -1,14 +1,45 @@
-import React from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import styles from "../styles/ScreenStyles";
-import { AuthContext } from "../components/context";
+import { loginReducer, initialState } from "../utils/reducers/loginReducer";
+import firebase from "firebase";
 
 export default function Home({ navigation }) {
-  const { signIn, signOut, signUp } = React.useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState({});
+  const [loginState, dispatch] = useReducer(loginReducer, initialState);
+
+  // database get request from firestore
+  const fetchData = () => {
+    setLoading(true);
+
+    const db = firebase.firestore();
+    db.collection("users")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.docs.forEach((doc) => {
+          console.log("doc.id: ", doc.id);
+          console.log("loginState.docId: ", loginState.docId);
+          if (doc.id == loginState.docId) {
+            console.log("girdi");
+            setData(doc.data());
+            return;
+          }
+        });
+      });
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {}, [data]);
 
   const clickHandler = () => {
-    signOut();
+    dispatch({ type: "SIGNOUT" });
+    navigation.navigate("Login");
   };
   return (
     <SafeAreaView style={styles.container}>
