@@ -8,13 +8,10 @@ import { View, ActivityIndicator } from "react-native";
 import firebase from "firebase";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { loginReducer, initialState } from "./src/utils/reducers/loginReducer";
 
 import LoginScreen from "./src/screens/LoginScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 import HomeScreen from "./src/screens/HomeScreen";
-
-import styles from "./src/styles/ScreenStyles";
 
 // objcet for firebase configuration
 const firebaseConfig = {
@@ -35,11 +32,6 @@ if (firebase.apps.length === 0) {
 }
 
 export default function App() {
-  const [loginState, dispatch] = React.useReducer(loginReducer, initialState);
-
-  useEffect(() => {
-    console.log("loginState: ", loginState);
-  }, [loginState.docId]);
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Login'>

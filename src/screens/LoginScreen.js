@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext, useReducer } from "react";
-import { useHistory } from "react-dom";
 import firebase from "firebase";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, View, TextInput, Button, SafeAreaView } from "react-native";
 import { loginReducer, initialState } from "../utils/reducers/loginReducer";
-
+import { LOGIN } from "../utils/constants/constants";
 import styles from "../styles/ScreenStyles";
 
 function LoginScreen({ navigation, route }) {
@@ -21,6 +20,10 @@ function LoginScreen({ navigation, route }) {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    console.log(loginState);
+  }, [loginState]);
 
   useEffect(() => {
     if (route.params !== undefined && route.params !== data) {
@@ -61,8 +64,8 @@ function LoginScreen({ navigation, route }) {
           item.data().username === username &&
           item.data().password === password
         ) {
-          console.log("item.id: ", item.id);
-          dispatch({ type: "LOGIN", payload: item.id });
+          dispatch({ type: LOGIN, payload: item.id });
+
           navigation.navigate("Home");
         }
       });

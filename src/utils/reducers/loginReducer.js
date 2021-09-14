@@ -1,16 +1,22 @@
+import LoginScreen from "../../screens/LoginScreen";
+import { LOGIN, LOGOUT } from "../constants/constants";
+
 export const initialState = {
   docId: "",
+  isLogin: false,
 };
 
-export const loginReducer = (state, action) => {
+export const loginReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "LOGIN":
-      return { ...state, docId: action.payload };
+    case LOGIN:
+      return { ...state, docId: action.payload, isLogin: true };
 
-    case "SIGNOUT":
-      return { ...state, ...initialState };
+    case LOGOUT:
+      return { ...state, ...initialState, isLogin: false };
 
     default:
       return state;
   }
 };
+
+export default loginReducer;
