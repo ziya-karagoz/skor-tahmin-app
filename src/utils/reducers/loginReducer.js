@@ -6,7 +6,7 @@ export const initialState = {
   isLogin: false,
 };
 
-export const loginReducer = (state = initialState, action) => {
+export const loginReducer = (state, action) => {
   switch (action.type) {
     case LOGIN:
       return { ...state, docId: action.payload, isLogin: true };

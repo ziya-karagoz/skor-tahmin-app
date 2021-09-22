@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, View, TextInput, Button, SafeAreaView } from "react-native";
+import {
+  Text,
+  View,
+  TextInput,
+  Button,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
 import firebase from "firebase";
 import styles from "../styles/ScreenStyles";
 
@@ -38,6 +45,10 @@ function RegisterScreen({ navigation }) {
       email: email,
       password: password,
       isLogin: false,
+      currentMatchId: "",
+      currentPrediction: "",
+      currentWinnerTeam: "",
+      points: 0,
     };
     const db = firebase.firestore();
     db.collection("users").add(userdata);
@@ -131,14 +142,11 @@ function RegisterScreen({ navigation }) {
         />
       </View>
 
-      <Button
-        style={styles.button}
-        type='button'
-        onPress={handleSubmit}
-        title='Register'
-      >
-        Register
-      </Button>
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText} onPress={handleSubmit}>
+          Register
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }

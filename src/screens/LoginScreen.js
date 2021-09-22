@@ -2,19 +2,27 @@ import React, { useState, useEffect, useContext, useReducer } from "react";
 import firebase from "firebase";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, View, TextInput, Button, SafeAreaView } from "react-native";
+import {
+  Text,
+  View,
+  TextInput,
+  Button,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
 import { loginReducer, initialState } from "../utils/reducers/loginReducer";
 import { LOGIN } from "../utils/constants/constants";
 import styles from "../styles/ScreenStyles";
+import { TestContext } from "../components/TestContext";
+import { adminLogin } from "../utils/constants/constants";
 
-function LoginScreen({ navigation, route }) {
+function LoginScreen({ navigation, route, state }) {
   // states
+  const [loginState, dispatch] = state;
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [data, setData] = useState([]);
-
-  const [loginState, dispatch] = useReducer(loginReducer, initialState);
 
   // effect hooks
   useEffect(() => {
@@ -22,14 +30,10 @@ function LoginScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    console.log(loginState);
-  }, [loginState]);
-
-  useEffect(() => {
-    if (route.params !== undefined && route.params !== data) {
+    if (route?.params !== undefined && route?.params !== data) {
       fetchData();
     }
-  }, [route.params]);
+  }, [route?.params]);
 
   // database get request from firestore
   const fetchData = () => {
@@ -58,6 +62,11 @@ function LoginScreen({ navigation, route }) {
       return;
     }
 
+    // admin panel navigation
+    if (username === adminLogin.username && password === adminLogin.password) {
+      navigation.navigate("AdminPanel");
+    }
+
     if (!loading) {
       data.map((item) => {
         if (
@@ -65,8 +74,9 @@ function LoginScreen({ navigation, route }) {
           item.data().password === password
         ) {
           dispatch({ type: LOGIN, payload: item.id });
-
           navigation.navigate("Home");
+        } else {
+          return;
         }
       });
     }
@@ -99,19 +109,21 @@ function LoginScreen({ navigation, route }) {
             value={password}
           />
         </View>
-        <Button style={styles.button} onPress={handleSubmitPress} title='Login'>
-          Login
-        </Button>
       </View>
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText} onPress={handleSubmitPress}>
+          Login
+        </Text>
+      </TouchableOpacity>
       <View>
-        <Button
-          style={styles.button}
-          type='button'
-          onPress={() => navigation.navigate("Register")}
-          title="Don't have any account yet?"
-        >
-          Don't have any account yet?
-        </Button>
+        <TouchableOpacity style={styles.button}>
+          <Text
+            style={styles.buttonText}
+            onPress={() => navigation.navigate("Register")}
+          >
+            Register
+          </Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
